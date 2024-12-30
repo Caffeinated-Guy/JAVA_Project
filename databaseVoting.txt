@@ -1,0 +1,80 @@
+CREATE DATABASE OnlineVotingSystem;
+USE OnlineVotingSystem;
+
+CREATE TABLE Students (
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    usn VARCHAR(20) UNIQUE NOT NULL
+);
+
+CREATE TABLE Candidates (
+    candidate_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    position VARCHAR(100) NOT NULL
+);
+	
+CREATE TABLE Votes (
+    vote_id INT AUTO_INCREMENT PRIMARY KEY,
+    usn VARCHAR(20) UNIQUE NOT NULL,
+    candidate_id INT NOT NULL,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usn) REFERENCES Students(usn),
+    FOREIGN KEY (candidate_id) REFERENCES Candidates(candidate_id)
+);
+
+INSERT INTO Candidates (name, position) VALUES
+('Sagar', 'President');
+
+INSERT INTO Students (email, password, usn) VALUES
+('ashish.23cs018@sode-edu.in', 'Ashish_8747', '4MW23CS018'),
+('abhishek.23cs001@sode-edu.in', 'kinit07', '4MW23CS001');
+
+INSERT INTO Candidates (name, position) VALUES
+('Deepak', 'President'),
+('Chirag', 'President');
+
+INSERT INTO Candidates (name, position) VALUES ('Adarsh ', 'Vice-President');
+INSERT INTO Candidates (name, position) VALUES ('Kunal', 'Secretary');
+INSERT INTO Candidates (name, position) VALUES ('Sanjeet', 'Treasurer');
+
+INSERT INTO Candidates (name, position) VALUES ('Prajwal', 'President');
+INSERT INTO Candidates (name, position) VALUES ('Vijeth', 'Secretary');
+INSERT INTO Candidates (name, position) VALUES ('Micheal', 'Treasurer');
+
+SET SQL_SAFE_UPDATES = 0;
+
+DELETE FROM Votes;
+
+INSERT INTO Candidates (name, position) VALUES ('Tharun', 'Vice-President');
+
+INSERT INTO Students (email, password, usn) VALUES
+('adarsh.23cs002@sode-edu.in', 'Adarsh5099', '4MW23CS002'),
+('adarsh.23cs003@sode-edu.in', 'Adarsh', '4MW23CS003');
+
+ALTER TABLE Votes 
+ADD position VARCHAR(100) NOT NULL;
+
+-- Enforce that a student can vote only once per position
+ALTER TABLE Votes 
+ADD CONSTRAINT unique_vote_per_position UNIQUE (usn, position);
+
+SELECT * FROM Votes WHERE usn = 'provided_usn' AND position = 'provided_position';
+DELETE FROM Votes WHERE usn = 'your_usn';
+SELECT * FROM Votes WHERE usn = 'your_usn';
+SELECT * FROM Votes;
+
+ALTER TABLE Votes DROP INDEX usn;
+
+ALTER TABLE Votes DROP FOREIGN KEY fk_name;
+
+SELECT CONSTRAINT_NAME 
+FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE 
+WHERE TABLE_NAME = 'Votes' AND TABLE_SCHEMA = 'onlinevotingsystem';
+
+ALTER TABLE Votes DROP FOREIGN KEY votes_ibfk_2;
+
+ALTER TABLE Votes ADD UNIQUE (usn, position);
+ALTER TABLE Votes ADD CONSTRAINT fk_usn FOREIGN KEY (usn) REFERENCES Students(usn);
+
+
